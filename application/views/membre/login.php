@@ -3,16 +3,20 @@
     <div>
       <a class="hiddenanchor" id="signup"></a>
       <a class="hiddenanchor" id="signin"></a>
+        <center><img src="<?php echo site_url(); ?>assets/img/image.png" /> </center>
 
       <div class="login_wrapper">
         <div class="animate form login_form">
+          
           <section class="login_content">
+          
           <?php
           $attributes = array('id' => 'login-form');
           echo form_open('membre/user_login_process', $attributes);
           ?>
             <form id="login-form">
-              <h1>Login Form</h1>
+                         
+              <h1>Authentification</h1>
               <div>
                 <input type="text" class="form-control" placeholder="Username" required="" name="user"/>
               </div>

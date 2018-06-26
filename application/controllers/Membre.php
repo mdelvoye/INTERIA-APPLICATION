@@ -20,7 +20,6 @@ class Membre extends CI_Controller {
 	 */
     private function hashPassword($password, $login){
         $dateJour = date('Y-m-d');
-        var_dump($dateJour);
         $password = hash('sha256', $password);
         $newCrypt = hash('sha256', $password.$login.$dateJour);
         return $newCrypt;
@@ -66,9 +65,13 @@ class Membre extends CI_Controller {
         $this->load->view('membre/footer');
     }
     public function pointage(){
+        $data = array();
+        $data['attendances'] = $this->odoo_model->getCurrentDateAttendances($this->session->idBadge);        
         $this->load->view('membre/header');
-        $this->load->view('membre/pointage');
+        $this->load->view('membre/pointage', $data);
         $this->load->view('membre/footer');
+        
+        
     }
 
 
@@ -88,11 +91,17 @@ class Membre extends CI_Controller {
             //Validation du couple Login / mot de passe auprés de Odoo
             $hmacKey = $this->hashPassword($password, $username);
             $is_member = $this->odoo_model->is_member($username,$hmacKey);
-
+            
 
             if ($is_member >= 1){
+                $attendance = $this->odoo_model->checkAttendance($username);
+                if ( $attendance == True ){
+                    $this->session->set_userdata('idAttendance', $attendance);
+                }
                 $this->session->set_userdata('logged_in', true);
                 $this->session->set_userdata('idBadge', $username);
+                
+                
                 redirect('membre/pointage');
             }
             else{
@@ -101,17 +110,23 @@ class Membre extends CI_Controller {
         }
     }
     public function doAttendance(){
-        $idBadge = $this->session->idBadge;
 
+        $idBadge = $this->session->idBadge;
+        
         if (isset($this->session->idAttendance)){
             # Si c'est une sortie
-            $this->odoo_model->doAttendanceCheckOut($idBadge, $this->session->idAttendance);
+            
+            $response = $this->odoo_model->doAttendanceCheckOut($idBadge, $this->session->idAttendance);
             $dateAttendance = $this->odoo_model->dateTimeOdooServer($this->session->idAttendance, 'check_out');
             $humanDate = DateTime::createFromFormat("Y-m-d H:i:s", formatDateTime($dateAttendance, 'UTC')['datetime']);
             $this->session->set_userdata('dateAttendance', $humanDate->format("d/m/Y \à H:i:s"));
             $this->session->unset_userdata('idAttendance');
             redirect('membre/pointage');
+            
+        
+            
         }else{
+            
             #Si c'est une entrée
             $attendance = $this->odoo_model->doAttendanceCheckIn($idBadge);
             $this->session->set_userdata('idAttendance', $attendance);

@@ -55,6 +55,14 @@ class Odoo_model extends CI_Model
         return $reponse;
 
     }
+    
+    public function checkAttendance($idBadge){
+        $reponse = $this->model->execute_kw($this->db, $this->user_id, $this->password, 'ms.webapp', 'web_api_check_attendance',
+            array(
+                array($idBadge),
+            ));
+        return $reponse;
+    }
 
     public function doAttendanceCheckIn($idBadge){
         $reponse = $this->model->execute_kw($this->db, $this->user_id, $this->password, 'ms.webapp', 'web_api_do_attendance_check_in',
@@ -79,7 +87,22 @@ class Odoo_model extends CI_Model
                 array($check),
             ));
         return $reponse;
-
+    }
+    
+    public function getCurrentDateAttendances($idBadge){
+        $date = new DateTime('NOW');
+        
+        $orders = $this->model->execute_kw($this->db, $this->user_id, $this->password,
+                'hr.attendance', 'search_read',
+                array(
+                    array(
+                        array('x_check_in_web', 'like', $date->format('Y-m-d%') ),
+                        )
+                ),
+                # donnees recuperees
+                array('fields' => array('x_check_in_web', 'x_check_out_web')));
+        return $orders;
+        
     }
 
 

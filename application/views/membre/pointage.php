@@ -6,7 +6,7 @@
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
-              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Pointage</span></a>
+              <a class="site_title"><i class="fa fa-truck"></i> <span>INTERIA</span></a>
             </div>
 
             <div class="clearfix"></div>
@@ -17,9 +17,9 @@
               <div class="menu_section">
                 <h3>General</h3>
                 <ul class="nav side-menu">
-                  <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
+                  <li><a><i class="fa fa-home"></i> Pointages <span class="fa fa-chevron-down"></span></a>
                     <ul class="nav child_menu">
-                        <li><a href="pointage.html">Mes pointages</a></li>
+                        <li><a href="pointage.html">Pointer</a></li>
                     </ul>
                   </li>
       
@@ -78,17 +78,7 @@
               <div class="col-md-12 col-sm-12 col-xs-12">
                 <div class="x_panel">
                   <div class="x_title">
-                    <h2>Pointage</h2>
-                    <ul class="nav navbar-right panel_toolbox">
-                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                      </li>
-                      <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-
-                      </li>
-                      <li><a class="close-link"><i class="fa fa-close"></i></a>
-                      </li>
-                    </ul>
+                    <h2>Pointer</h2>
                     <div class="clearfix"></div>
                   </div>
                   <div class="x_content">
@@ -96,30 +86,73 @@
                       $attributes = array('id' => 'pointage');
                       echo form_open('membre/doAttendance', $attributes);
                       ?>
-                      <form id="pointage">
+                      <form id="pointage" style="height: 100%;">
                           <center>
-                    <button class = "btn btn-app">
-                        <i class="fa fa-truck">
-                            <?php
-                            if (isset($this->session->idAttendance)){
-                                echo "<p>Sortie</p>";
-                            }else{
-                                echo "<p>Entrée</p>";
-                            }
-                            ?>
-                        </i>
-                    </button>
+                            <button class = "btn btn-info" style="height : 300px !important; width : 300px; ">
+                                <i>
+                                    <H1>Pointer</H1>
+                                </i>
+                            </button>
                           </center>
                       </form>
                       <center>
-                          Le
-                      <?php
-                      if (isset($this->session->dateAttendance)){
-                          echo $this->session->dateAttendance;
-                      }
-                      ?>
+                          
+                      
                       </center>
+                      
+                          
+                          
+                          <div class="x_content">
 
+                            <table class="table table-striped">
+                               <thead>
+                                <tr>
+                                  <th>Entrée</th>
+                                  <th>Sortie</th>
+                                </tr>
+                              </thead>
+
+                              <tbody>
+                                 <?php
+                                    foreach ($attendances as $attendance){
+                                      ?>
+                                        <tr>
+                                          
+                                          <td>
+                                          <?php
+                                          if (isset($attendance['x_check_in_web']) and $attendance['x_check_in_web']){
+                                            $check_in = DateTime::createFromFormat("Y-m-d H:i:s", formatDateTime($attendance['x_check_in_web'], 'UTC')['datetime']);
+                                            echo $check_in->format("d/m/Y \à H:i:s");
+                                          }
+                                          ?>
+                                          </td>
+                                          
+                                        
+                                        
+                                          
+                                          <td>
+                                          <?php
+                                          if (isset($attendance['x_check_out_web']) and $attendance['x_check_out_web']){
+                                            $check_out = DateTime::createFromFormat("Y-m-d H:i:s", formatDateTime($attendance['x_check_out_web'], 'UTC')['datetime']);
+                                            
+                                            echo $check_out->format("d/m/Y \à H:i:s");
+                                          }
+                                          ?>
+                                          </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                  ?>
+                                
+                              </tbody>
+                              
+                            </table>
+
+                        </div>
+                         
+                         
+                      
+                      
 
                  </div>
               </div>
